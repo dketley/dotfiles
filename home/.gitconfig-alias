@@ -1,0 +1,69 @@
+# Thanks to https://haacked.com/archive/2014/07/28/github-flow-aliases/ for
+# some of these!
+[core]
+	pager = diff-so-fancy | less --tabs=4 -RFX
+[diff] 
+        tool = meld
+[difftool]
+        prompt = false
+[difftool "meld"]
+        cmd = meld "$LOCAL" "$REMOTE"
+[alias]
+	st = status
+	ci = commit
+	co = checkout
+    br = branch
+    ec = config --global -e
+    up = !git pull --rebase --prune $@ && git submodule update --init --recursive
+    cob = checkout -b
+    cim = !git add -A && git commit -m
+    save = !git add -A && git commit -m 'SAVEPOINT'
+    wip = commit -am "WIP"
+    undo = reset HEAD~1 --mixed
+    amend = commit -a --amend
+    wipe = !git add -A && git commit -qm 'WIPE SAVEPOINT' && git reset HEAD~1 --hard
+    bclean = "!f() { git branch --merged ${1-master} | grep -v " ${1-master}$" | xargs git branch -d; }; f"
+    bdone = "!f() { git checkout ${1-master} && git up && git bclean ${1-master}; }; f"
+    llog = log --date=local
+    changes=diff --name-status -r
+    diffstat=diff --stat -r
+    prune-all = !git remote | xargs -n 1 git remote prune
+    edit-unmerged = "!f() { git diff --name-status --diff-filter=U | cut -f2 ; }; vim `f`"
+    add-unmerged = "!f() { git diff --name-status --diff-filter=U | cut -f2 ; }; git add `f`"
+    lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+    forkdiff = !bash -c 'git diff $(git merge-base "$1" "$2") "$2" "${@: 3}" ' -
+    untrack = rm --cache --
+    com = "!git checkout master"
+    ms = merge --squash
+    brd = branch -D
+    addf = add -f
+    caa = commit -a --amend -C HEAD
+    brename = branch -m
+    wdiff = diff --ignore-space-at-eol
+    ignore = update-index --assume-unchanged
+    unignore = update-index --no-assume-unchanged
+    squash-all-on-branch = "!f() { current_branch=$(git rev-parse --abbrev-ref HEAD); git reset $(git merge-base master ${1-$current_branch}); }; f"
+    patch = !git --no-pager diff --no-color --ignore-space-at-eol
+    svndiff = !git --no-pager diff --no-color --ignore-space-at-eol --full-index
+    sign = commit -S -m
+    slog = log --show-signature
+    ignored = !git ls-files -v | grep "^[[:lower:]]"
+[color]
+	ui = true
+[color "diff-highlight"]
+	oldNormal = red bold
+	oldHighlight = red bold 52
+	newNormal = green bold
+	newHighlight = green bold 22
+[color "diff"]
+	meta = yellow
+	frag = magenta bold
+	commit = yellow bold
+	old = red bold
+	new = green bold
+	whitespace = red reverse
+[diff-so-fancy]
+	markEmptyLines = false
+	stripLeadingSymbols = false
+[gpg]
+	program = gpg
